@@ -6,19 +6,19 @@ export default new Router({
   routes: [
     {
       path: "/",
-      alias: "/tutorials",
-      name: "tutorials",
-      component: () => import("./components/TutorialsList")
+      alias: "/courses",
+      name: "courses",
+      component: () => import("./components/CourseList")
     },
     {
-      path: "/tutorials/:id",
-      name: "tutorial-details",
-      component: () => import("./components/Tutorial")
+      path: "/courses/:id",
+      name: "course-details",
+      component: () => import("./components/Course")
     },
     {
       path: "/add",
       name: "add",
-      component: () => import("./components/AddTutorial")
+      component: () => import("./components/AddCourse.vue")
     }
   ]
 });
