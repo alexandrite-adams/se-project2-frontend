@@ -6,12 +6,6 @@ class CourseDataService {
   get(id) {
     return http.get(`/course-t2/id/${id}`);
   }
-  getName(name) {
-    return http.get(`/course-t2/name/name=${name}`);
-  }
-  findByDept(dept) {
-    return http.get(`/course-t2/?dept=${dept}`);
-  }
   create(data) {
     return http.post("/course-t2", data);
   }
