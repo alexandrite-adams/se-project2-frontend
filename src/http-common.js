@@ -1,9 +1,9 @@
 import axios from "axios";
 var baseURL = "";
 if (process.env.NODE_ENV === "development") {
-  baseURL = "http://localhost/";
+  baseURL = "http://localhost:8081/";
 } else {
-  baseURL = "/course-t2/";
+  baseURL = "http://project2.eaglesoftwareteam.com";
 }
 
 export default axios.create({
