@@ -4,10 +4,10 @@
     <div class="col-md-8">
       <div class="input-group mb-3">
         <input type="text" class="form-control" placeholder="Search by name"
-          v-model="name"/>
+          v-model="cName" v-on:keyup.enter="searchBy()"/>
         <div class="input-group-append">
           <button class="btn btn-outline-secondary" type="button"
-            @click="searchName"
+            @click="searchBy()"
           >
             Search
           </button>
@@ -19,7 +19,7 @@
       <ul class="list-group">
         <li class="list-group-item"
           :class="{ active: index == currentIndex }"
-          v-for="(course, index) in courses"
+          v-for="(course, index) in filteredCourses"
           :key="index"
           @click="setActiveCourse(course, index)"
         >
@@ -46,7 +46,7 @@
           <label><strong>Hours:</strong></label> {{ currentCourse.hours }}
         </div>
         <div>
-          <label><strong>Name:</strong></label> {{ currentCourse.name }}
+          <label><strong>Name:</strong></label> {{ currentCourse.cName }}
         </div>
         <div>
           <label><strong>Description:</strong></label> {{ currentCourse.description }}
@@ -74,9 +74,10 @@ export default {
   data() {
     return {
       courses: [],
+      filteredCourses: [],
       currentCourse: null,
       currentIndex: -1,
-      title: ""
+      cName: ""
     };
   },
   methods: {
@@ -84,6 +85,7 @@ export default {
       CourseDataService.getAll()
         .then(response => {
           this.courses = response.data;
+          this.filteredCourses = this.courses
           console.log(response.data);
         })
         .catch(e => {
@@ -109,17 +111,9 @@ export default {
           console.log(e);
         });
     },
-    
-    searchName() {
-      CourseDataService.findByName(this.name)
-        .then(response => {
-          this.courses = response.data;
-          console.log(response.data);
-        })
-        .catch(e => {
-          console.log(e);
-        });
-    }
+    searchBy() {
+      this.filteredCourses = this.courses.filter(course => course.name.includes(this.cName) || course.dept.includes(this.cName) || course.courseNumber.includes(this.cName))
+    },
   },
   mounted() {
     this.retrieveCourses();

@@ -71,7 +71,7 @@
       </div>
       <div v-else>
         <h4>You submitted successfully!</h4>
-        <button class="btn btn-success" @click="newCourse">Add</button>
+        <button class="btn btn-success" @click="newCourse">Add another course</button>
       </div>
     </div>
   </template>
