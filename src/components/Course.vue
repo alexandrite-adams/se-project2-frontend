@@ -56,31 +56,20 @@
             />
         </div>
         <div class="form-group">
-          <label><strong>Status:</strong></label>
-          {{ currentCourse.published ? "Published" : "Pending" }}
-        </div>
-      </form>
-      <button class="badge badge-primary mr-2"
-        v-if="currentCourse.published"
-        @click="updatePublished(false)"
-      >
-        UnPublish
-      </button>
-      <button v-else class="badge badge-primary mr-2"
-        @click="updatePublished(true)"
-      >
-        Publish
-      </button>
-      <button class="badge badge-danger mr-2"
-        @click="deleteCourse"
+          <button class="m-3 btn btn-sm btn-danger" type="button"
+        @click="deleteCourse()"
       >
         Delete
       </button>
-      <button type="submit" class="badge badge-success"
-        @click="updateCourse"
+        </div>
+        
+      <button type="submit" class="m-3 btn btn-sm btn-danger" 
+        @click="updateCourse()"
       >
         Update
       </button>
+      </form>
+      
       <p>{{ message }}</p>
     </div>
     <div v-else>
@@ -130,11 +119,22 @@
             console.log(e);
           });
       },
+      retrieveCourses() {
+      CourseDataService.getAll()
+        .then(response => {
+          this.courses = response.data;
+          this.filteredCourses = this.courses
+          console.log(response.data);
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    },
       updateCourse() {
         CourseDataService.update(this.currentCourse.id, this.currentCourse)
           .then(response => {
             console.log(response.data);
-            this.message = 'The Course was updated successfully!';
+            this.retrieveCourses(); 
           })
           .catch(e => {
             console.log(e);
