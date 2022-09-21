@@ -46,7 +46,7 @@
           <label><strong>Hours:</strong></label> {{ currentCourse.hours }}
         </div>
         <div>
-          <label><strong>Name:</strong></label> {{ currentCourse.cName }}
+          <label><strong>Name:</strong></label> {{ currentCourse.name }}
         </div>
         <div>
           <label><strong>Description:</strong></label> {{ currentCourse.description }}
