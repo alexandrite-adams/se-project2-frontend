@@ -56,7 +56,7 @@
         >
           Delete
         </button>
-        <a class="badge badge-warning"
+        <a class="m-3 btn btn-sm btn-danger"
           :href="'/courses/' + currentCourse.id"
         >
           Edit
@@ -117,16 +117,16 @@ export default {
       this.filteredCourses = this.courses.filter(course => course.name.includes(this.cName) || course.dept.includes(this.cName) || course.courseNumber.includes(this.cName))
     },
     deleteCourse() {
-      CourseDataService.delete(this.currentCourse.id)
-        .then(response => {
-          console.log(response.data);
-          this.currentCourse = null;
-          this.retrieveCourses();
-        })
-        .catch(e => {
-          console.log(e);
-        });
-    }
+        CourseDataService.delete(this.currentCourse.id)
+          .then(response => {
+            console.log(response.data);
+            this.currentCourse = null;
+            this.retrieveCourses();
+          })
+          .catch(e => {
+            console.log(e);
+          });
+    },
   },
   mounted() {
     this.retrieveCourses();

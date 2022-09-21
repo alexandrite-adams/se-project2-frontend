@@ -63,7 +63,7 @@
       </button>
         </div>
         
-      <button type="submit" class="badge badge-success"
+      <button type="submit" class="m-3 btn btn-sm btn-danger" 
         @click="updateCourse()"
       >
         Update
@@ -119,11 +119,22 @@
             console.log(e);
           });
       },
+      retrieveCourses() {
+      CourseDataService.getAll()
+        .then(response => {
+          this.courses = response.data;
+          this.filteredCourses = this.courses
+          console.log(response.data);
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    },
       updateCourse() {
         CourseDataService.update(this.currentCourse.id, this.currentCourse)
           .then(response => {
             console.log(response.data);
-            this.message = 'The Course was updated successfully!';
+            this.retrieveCourses(); 
           })
           .catch(e => {
             console.log(e);
