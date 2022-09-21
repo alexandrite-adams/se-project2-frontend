@@ -9,6 +9,10 @@ if (process.env.NODE_ENV === "development") {
 export default axios.create({
   baseURL: baseURL,
   headers: {
-    "Content-type": "application/json"
+    Accept: "application/json",
+    "Content-Type": "application/json",
+    "X-Requested-With":"XMLHttpRequest",
+    "Access-Control-Allow-Origin":"*",
+    crossDomain: true
   }
 });
