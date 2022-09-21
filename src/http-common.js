@@ -1,7 +1,7 @@
 import axios from "axios";
 var baseURL = "";
 if (process.env.NODE_ENV === "development") {
-  baseURL = "http://localhost:8081/";
+  baseURL = "http://localhost:3002/";
 } else {
   baseURL = "http://project2.eaglesoftwareteam.com";
 }
