@@ -56,31 +56,20 @@
             />
         </div>
         <div class="form-group">
-          <label><strong>Status:</strong></label>
-          {{ currentCourse.published ? "Published" : "Pending" }}
-        </div>
-      </form>
-      <button class="badge badge-primary mr-2"
-        v-if="currentCourse.published"
-        @click="updatePublished(false)"
-      >
-        UnPublish
-      </button>
-      <button v-else class="badge badge-primary mr-2"
-        @click="updatePublished(true)"
-      >
-        Publish
-      </button>
-      <button class="badge badge-danger mr-2"
-        @click="deleteCourse"
+          <button class="m-3 btn btn-sm btn-danger" type="button"
+        @click="deleteCourse()"
       >
         Delete
       </button>
+        </div>
+        
       <button type="submit" class="badge badge-success"
-        @click="updateCourse"
+        @click="updateCourse()"
       >
         Update
       </button>
+      </form>
+      
       <p>{{ message }}</p>
     </div>
     <div v-else>

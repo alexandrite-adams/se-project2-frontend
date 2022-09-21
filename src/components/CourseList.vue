@@ -26,9 +26,9 @@
           {{ course.name }}
         </li>
       </ul>
-      <button class="m-3 btn btn-sm btn-danger" @click="removeAllCourses">
+      <!-- <button class="m-3 btn btn-sm btn-danger" @click="removeAllCourses">
         Remove All
-      </button>
+      </button> -->
     </div>
     <div class="col-md-6">
       <div v-if="currentCourse">
@@ -51,9 +51,11 @@
         <div>
           <label><strong>Description:</strong></label> {{ currentCourse.description }}
         </div>
-        <div>
-          <label><strong>Status:</strong></label> {{ currentCourse.published ? "Published" : "Pending" }}
-        </div>
+        <button class="m-3 btn btn-sm btn-danger" type="button"
+          @click="deleteCourse()"
+        >
+          Delete
+        </button>
         <a class="badge badge-warning"
           :href="'/courses/' + currentCourse.id"
         >
@@ -114,6 +116,17 @@ export default {
     searchBy() {
       this.filteredCourses = this.courses.filter(course => course.name.includes(this.cName) || course.dept.includes(this.cName) || course.courseNumber.includes(this.cName))
     },
+    deleteCourse() {
+      CourseDataService.delete(this.currentCourse.id)
+        .then(response => {
+          console.log(response.data);
+          this.currentCourse = null;
+          this.retrieveCourses();
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    }
   },
   mounted() {
     this.retrieveCourses();
