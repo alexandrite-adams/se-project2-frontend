@@ -4,10 +4,10 @@
     <div class="col-md-8">
       <div class="input-group mb-3">
         <input type="text" class="form-control" placeholder="Search by name"
-          v-model="name"/>
+          v-model="cName"/>
         <div class="input-group-append">
           <button class="btn btn-outline-secondary" type="button"
-            @click="searchName"
+            @click="searchName();"
           >
             Search
           </button>
@@ -46,7 +46,7 @@
           <label><strong>Hours:</strong></label> {{ currentCourse.hours }}
         </div>
         <div>
-          <label><strong>Name:</strong></label> {{ currentCourse.name }}
+          <label><strong>Name:</strong></label> {{ currentCourse.cName }}
         </div>
         <div>
           <label><strong>Description:</strong></label> {{ currentCourse.description }}
@@ -76,7 +76,7 @@ export default {
       courses: [],
       currentCourse: null,
       currentIndex: -1,
-      title: ""
+      cName: ""
     };
   },
   methods: {
@@ -109,9 +109,18 @@ export default {
           console.log(e);
         });
     },
-    
     searchName() {
-      CourseDataService.findByName(this.name)
+      CourseDataService.getName(this.cName)
+        .then(response => {
+          this.courses = response.data;
+          console.log(response.data);
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    },
+    searchDept() {
+      CourseDataService.getDept(this.dept)
         .then(response => {
           this.courses = response.data;
           console.log(response.data);

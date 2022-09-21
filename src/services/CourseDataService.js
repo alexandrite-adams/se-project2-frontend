@@ -4,7 +4,13 @@ class CourseDataService {
     return http.get("/course-t2");
   }
   get(id) {
-    return http.get(`/course-t2/${id}`);
+    return http.get(`/course-t2/id/${id}`);
+  }
+  getName(name) {
+    return http.get(`/course-t2/name/name=${name}`);
+  }
+  findByDept(dept) {
+    return http.get(`/course-t2/?dept=${dept}`);
   }
   create(data) {
     return http.post("/course-t2", data);
@@ -17,9 +23,6 @@ class CourseDataService {
   }
   deleteAll() {
     return http.delete(`/course-t2`);
-  }
-  findByName(name) {
-    return http.get(`/course-t2?name=${name}`);
   }
 }
 export default new CourseDataService();
