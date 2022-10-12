@@ -1,7 +1,14 @@
 <template>
     <div>
         <div> 
-            <button v-on:click="nextWeek">Next Wk</button>
+          <form>
+            <label>Select Session: </label>
+            <select>
+              <option value="First Session">First Session</option>
+              <option value="Second Session">Second Session</option>
+            </select>
+          </form>  
+          <button v-on:click="nextWeek">Next Wk</button>
         </div>
         <v-row>
         <v-col>
