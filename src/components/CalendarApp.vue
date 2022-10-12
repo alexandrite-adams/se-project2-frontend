@@ -3,12 +3,11 @@
         <div> 
           <form>
             <label>Select Session: </label>
-            <select>
-              <option value="First Session">First Session</option>
+            <select @change="changeDisplayedSession">
+              <option selected value="First Session">First Session</option>
               <option value="Second Session">Second Session</option>
             </select>
           </form>  
-          <button v-on:click="nextWeek">Next Wk</button>
         </div>
         <v-row>
         <v-col>
@@ -21,7 +20,8 @@
                 color="primary"
                 type="week"
                 min-weeks="5"
-                end="2022-10-30"
+                :end="calEnd"
+                @click:event="showEvent"
             ></v-calendar>
             </v-sheet>
         </v-col>
@@ -33,13 +33,24 @@
     import SessionDataService from "../services/SessionDataService";
     export default {
       data: () => ({
-        today: '2019-01-08',
+        today: '2019-01-08', // placeholder date
+        calEnd: "2022-10-30", // placeholder date
+        sessionOne: '2019-01-08', // placeholder session date
+        sessionTwo: '2019-07-09', // placeholder session date
+        displayedSession: "First Session",
         sections: [],
-        events: [
+        selectedEvent: {},
+        selectedOpen: false,
+        events: [ // example events 
           {
             name: 'Weekly Meeting',
-            start: '2019-01-07 09:00',
+            start: '2019-01-07 9:00', 
+            // start: {
+            //   date: '2019-01-07',
+            //   time: '09:00',
+            // },
             end: '2019-01-07 10:00',
+
           },
           {
             name: `Thomas' Birthday`,
@@ -50,15 +61,22 @@
             start: '2019-01-09 12:30',
             end: '2019-01-09 15:30',
           },
+          {
+            name: "Second Weekly Meeting",
+            start: "2019-07-10 12:30",
+            end: "2019-07-10 15:00"
+          },
+          {
+            name: "Some other event",
+            start: "2019-07-07 12:30",
+            end: "2019-07-07 15:00"
+          }
         ],
       }),
       mounted () {
         this.$refs.calendar.scrollToTime('08:00')
       },
       methods: {
-        nextWeek() {
-          this.today = "2019-01-30"
-        },
         getSections() {
           SessionDataService.getAll()
             .then(response => {
@@ -78,7 +96,20 @@
           this.events.push({
             name: event.name
           });
-        }
+        },
+        changeDisplayedSession() {
+          if (this.displayedSession == "First Session"){
+            this.today = this.sessionTwo;
+            this.displayedSession = "Second Session";
+          }
+          else{
+            this.today = this.sessionOne;
+            this.displayedSession = "First Session";
+          }
+        },
+        showEvent (event) {
+          console.log(event.date);
+        },
       }
     }
 </script>
