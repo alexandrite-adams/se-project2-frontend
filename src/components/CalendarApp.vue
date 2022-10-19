@@ -30,15 +30,17 @@
 </template>
 
 <script>
-    import SessionDataService from "../services/SessionDataService";
+    import SectionDataService from "../services/SectionDataService";
+    import SectionTimeDataService from "../services/SectionTimeDataService";
     export default {
       data: () => ({
-        today: '2019-01-08', // placeholder date
-        calEnd: "2022-10-30", // placeholder date
-        sessionOne: '2019-01-08', // placeholder session date
-        sessionTwo: '2019-07-09', // placeholder session date
+        today: '2023-01-08', // placeholder same as first session
+        calEnd: "2023-04-27", // ending date of the last session
+        sessionOne: '2023-01-08', // placeholder first session start
+        sessionTwo: '2023-03-06', // placeholder second session start
         displayedSession: "First Session",
         sections: [],
+        sectionTimes: [],
         selectedEvent: {},
         selectedOpen: false,
         events: [ // example events 
@@ -78,9 +80,26 @@
       },
       methods: {
         getSections() {
-          SessionDataService.getAll()
+          SectionDataService.getAll()
             .then(response => {
               this.sections = response.data;
+              this.getSectionTimes(); // grab sectionTimes
+
+              // map sectionTimes to sections
+              this.sections.forEach(this.createEvent)
+
+              // Change this for the filter
+              // this.filteredCourses = this.courses
+              
+            })
+            .catch(e => {
+              console.log(e);
+            });
+        },
+        getSectionTimes() {
+          SectionTimeDataService.getAll()
+            .then(response => {
+              this.sectionTimes = response.data;
               // Change this for the filter
               // this.filteredCourses = this.courses
               console.log(response.data);
@@ -89,14 +108,35 @@
               console.log(e);
             });
         },
-        createCalEvents() {
-          this.sections.forEach(this.createCalEvent);
+        // Map sectionTimes to sections and add a new event.
+        // If the section is a full semester, 2 events will
+        // be created, one for each section time.
+        createEvent(section) {
+          for (let i = 0; i < this.sections.length(); i++){
+            if (section == this.sectionTimes[i].sectionID)
+            {
+              let sectionTime = this.sectionTimes[i];
+              this.events.push({
+                name: section.id,
+                // figure out how to do multiple week days
+                start: sectionTime.startDate + " " + sectionTime.startTime,
+                end: sectionTime.startDate + " " + sectionTime.endTime
+              });
+
+              // add a test to see if the section is in both first and second session
+              // add another event if it is, but with the end date
+              // if (sectionTime.)
+            }  
+          }
         },
-        createCalEvent(event) {
-          this.events.push({
-            name: event.name
-          });
-        },
+        // createCalEvents() {
+        //   this.sections.forEach(this.createCalEvent);
+        // },
+        // createCalEvent(event) {
+        //   this.events.push({
+        //     name: event.name
+        //   });
+        // },
         changeDisplayedSession() {
           if (this.displayedSession == "First Session"){
             this.today = this.sessionTwo;
