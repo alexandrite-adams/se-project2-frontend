@@ -11,7 +11,7 @@
         </div>
         <v-row>
         <v-col>
-            <v-sheet height="400">
+            <v-sheet height="650">
             <v-calendar
                 ref="calendar"
                 :now="today"
@@ -32,6 +32,7 @@
 <script>
     import SectionDataService from "../services/SectionDataService";
     import SectionTimeDataService from "../services/SectionTimeDataService";
+    import CourseDataService from "../services/CourseDataService";
     export default {
       data: () => ({
         today: '2023-01-08', // placeholder same as first session
@@ -41,6 +42,7 @@
         displayedSession: "First Session",
         sections: [],
         sectionTimes: [],
+        courses: [],
         selectedEvent: {},
         selectedOpen: false,
         events: [ // example events 
@@ -78,15 +80,20 @@
       mounted () {
         this.$refs.calendar.scrollToTime('08:00')
       },
+      async beforeMount() {
+        await this.getSections();
+        // console.log(this.events)
+      },
       methods: {
-        getSections() {
-          SectionDataService.getAll()
-            .then(response => {
+        async getSections() {
+          await SectionDataService.getAll()
+            .then(async response => {
               this.sections = response.data;
-              this.getSectionTimes(); // grab sectionTimes
-
+              await this.getSectionTimes(); // grab sectionTimes
+              await this.getCourses();
               // map sectionTimes to sections
               this.sections.forEach(this.createEvent)
+              
 
               // Change this for the filter
               // this.filteredCourses = this.courses
@@ -96,13 +103,21 @@
               console.log(e);
             });
         },
-        getSectionTimes() {
-          SectionTimeDataService.getAll()
+        async getSectionTimes() {
+          await SectionTimeDataService.getAll()
             .then(response => {
               this.sectionTimes = response.data;
               // Change this for the filter
               // this.filteredCourses = this.courses
-              console.log(response.data);
+            })
+            .catch(e => {
+              console.log(e);
+            });
+        },
+        async getCourses() {
+          await CourseDataService.getAll()
+            .then(response => {
+              this.courses = response.data;
             })
             .catch(e => {
               console.log(e);
@@ -112,22 +127,61 @@
         // If the section is a full semester, 2 events will
         // be created, one for each section time.
         createEvent(section) {
-          for (let i = 0; i < this.sections.length(); i++){
-            if (section == this.sectionTimes[i].sectionID)
+          
+          this.sectionTimes.forEach( sectionTime => {
+            if (section.id == sectionTime.sectionId) 
             {
-              let sectionTime = this.sectionTimes[i];
-              this.events.push({
-                name: section.id,
+              // find the course name
+
+              // suggest that the sections controller has a function to grab sections, include their courses and include their sectionTimes
+              let relevantCourse = this.courses.find( course => course.id == section.courseId);
+              let name = relevantCourse.name;
+              // console.log(name)
+
+              // create the event object and add it to the list
+              let tempEvent = {
+                name: name,
                 // figure out how to do multiple week days
+                // find a function to get the next X weekday from a date.
+                // have a loop to iterate through the weekdays in sectionTime and make 
+                // and event for each one that is valid
                 start: sectionTime.startDate + " " + sectionTime.startTime,
                 end: sectionTime.startDate + " " + sectionTime.endTime
-              });
+              }
+              // console.log(tempEvent);
+              this.events.push(tempEvent);
 
               // add a test to see if the section is in both first and second session
               // add another event if it is, but with the end date
               // if (sectionTime.)
-            }  
-          }
+            }
+          });
+          // for (let i = 0; i < this.sectionTimes.length; i++){
+          //   if (section.id == this.sectionTimes[i].sectionId)
+          //   {
+          //     // find the course name
+
+          //     // suggest that the sections controller has a function to grab sections, include their courses and include their sectionTimes
+          //     let relevantCourse = this.courses.find( course => course.id == section.courseId);
+          //     let name = relevantCourse.name;
+          //     // console.log(name)
+
+          //     // create the event object and add it to the list
+          //     let sectionTime = this.sectionTimes[i];
+          //     let tempEvent = {
+          //       name: name,
+          //       // figure out how to do multiple week days
+          //       start: sectionTime.startDate + " " + sectionTime.startTime,
+          //       end: sectionTime.startDate + " " + sectionTime.endTime
+          //     }
+          //     // console.log(tempEvent);
+          //     this.events.push(tempEvent);
+
+          //     // add a test to see if the section is in both first and second session
+          //     // add another event if it is, but with the end date
+          //     // if (sectionTime.)
+          //   }  
+          // }
         },
         // createCalEvents() {
         //   this.sections.forEach(this.createCalEvent);
