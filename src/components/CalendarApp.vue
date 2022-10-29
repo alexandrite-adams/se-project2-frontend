@@ -33,9 +33,11 @@
     import SectionDataService from "../services/SectionDataService";
     import SectionTimeDataService from "../services/SectionTimeDataService";
     import CourseDataService from "../services/CourseDataService";
+    import moment from 'moment';
     export default {
       data: () => ({
-        today: '2023-01-08', // placeholder same as first session
+        // today: '2023-01-08', // placeholder same as first session
+        today: '2023-01-15',
         calEnd: "2023-04-27", // ending date of the last session
         sessionOne: '2023-01-08', // placeholder first session start
         sessionTwo: '2023-03-06', // placeholder second session start
@@ -45,37 +47,7 @@
         courses: [],
         selectedEvent: {},
         selectedOpen: false,
-        events: [ // example events 
-          {
-            name: 'Weekly Meeting',
-            start: '2019-01-07 9:00', 
-            // start: {
-            //   date: '2019-01-07',
-            //   time: '09:00',
-            // },
-            end: '2019-01-07 10:00',
-
-          },
-          {
-            name: `Thomas' Birthday`,
-            start: '2019-01-10',
-          },
-          {
-            name: 'Mash Potatoes',
-            start: '2019-01-09 12:30',
-            end: '2019-01-09 15:30',
-          },
-          {
-            name: "Second Weekly Meeting",
-            start: "2019-07-10 12:30",
-            end: "2019-07-10 15:00"
-          },
-          {
-            name: "Some other event",
-            start: "2019-07-07 12:30",
-            end: "2019-07-07 15:00"
-          }
-        ],
+        events: [],
       }),
       mounted () {
         this.$refs.calendar.scrollToTime('08:00')
@@ -132,30 +104,151 @@
             if (section.id == sectionTime.sectionId) 
             {
               // find the course name
-
               // suggest that the sections controller has a function to grab sections, include their courses and include their sectionTimes
               let relevantCourse = this.courses.find( course => course.id == section.courseId);
               let name = relevantCourse.name;
-              // console.log(name)
 
-              // create the event object and add it to the list
-              let tempEvent = {
-                name: name,
-                // figure out how to do multiple week days
-                // find a function to get the next X weekday from a date.
-                // have a loop to iterate through the weekdays in sectionTime and make 
-                // and event for each one that is valid
-                start: sectionTime.startDate + " " + sectionTime.startTime,
-                end: sectionTime.startDate + " " + sectionTime.endTime
+              let courseNumber = relevantCourse.number;
+              
+              let formatString = 'YYYY-MM-DD';
+
+              let activeWeekdays = [];
+              // load up which weekdays have classes for this section
+              if (sectionTime.sunday == 1)
+                activeWeekdays[0] = 1;
+              if (sectionTime.monday == 1)
+                activeWeekdays[1] = 1;
+              if (sectionTime.tuesday == 1)
+                activeWeekdays[2] = 1;
+              if (sectionTime.wednesday == 1)
+                activeWeekdays[3] = 1;
+              if (sectionTime.thursday == 1)
+                activeWeekdays[4] = 1;
+              if (sectionTime.friday == 1)
+                activeWeekdays[5] = 1;
+              if (sectionTime.saturday == 1)
+                activeWeekdays[6] = 1;
+              
+              // the date for the start of the week
+
+              // if their data hasn't passed, then include courses in both first and second term
+              let currentDay = moment(sectionTime.startDate);
+              currentDay.add(1, 'weeks').isoWeekday(1);
+              for (let i = 0; i < activeWeekdays.length; i++){
+                let readableCurrentDay = currentDay.isoWeekday(i).format(formatString);
+                console.log(readableCurrentDay);
+                if (activeWeekdays[i] == 1){
+                  let tempEvent = {
+                    name: name,
+                    // figure out how to do multiple week days
+                    // find a function to get the next X weekday from a date.
+                    // have a loop to iterate through the weekdays in sectionTime and make 
+                    // and event for each one that is valid
+                    start: readableCurrentDay + " " + sectionTime.startTime,
+                    end: readableCurrentDay + " " + sectionTime.endTime
+                  }
+                  if (courseNumber.includes("CMSC"))
+                    this.events.push(tempEvent);
+                }
+                currentDay.add(1, 'days');//.isoWeekday(i).format(formatString);
               }
+
+
+
+              // let isoDate = '';
+              
+
+              // //create events for each specified week date
+              // if (sectionTime.sunday == 1) {
+              //   let startWkDay = moment(sectionTime.startDate).weekday();
+              //   if (startWkDay <= 1) { 
+              //     // then just give me this week's instance of that day
+              //     isoDate = moment(sectionTime.startDate).isoWeekday(startWkDay).format(formatString);
+              //   } else {
+              //     // otherwise, give me *next week's* instance of that same day
+              //     isoDate = moment(sectionTime.startDate).add(1, 'weeks').isoWeekday(startWkDay).format(formatString);
+              //   }
+
+              //   // create the event object and add it to the list
+              //   let tempEvent = {
+              //     name: name,
+              //     // figure out how to do multiple week days
+              //     // find a function to get the next X weekday from a date.
+              //     // have a loop to iterate through the weekdays in sectionTime and make 
+              //     // and event for each one that is valid
+              //     start: isoDate + " " + sectionTime.startTime,
+              //     end: isoDate + " " + sectionTime.endTime
+              //   }
+              //   this.events.push(tempEvent);
+              // }
+
+              // if (sectionTime.monday == 1) {
+              //   let startWkDay = moment(sectionTime.startDate).weekday();
+
+              //   if (startWkDay <= 1) { // 2 is the number for Monday (hopefully) 
+              //     // then just give me this week's instance of that day
+              //     isoDate = moment(sectionTime.startDate).isoWeekday(startWkDay).format(formatString);
+              //   } else {
+              //     // otherwise, give me *next week's* instance of that same day
+              //     isoDate = moment(sectionTime.startDate).add(1, 'weeks').isoWeekday(startWkDay).format(formatString);
+              //   }
+
+              //   // create the event object and add it to the list
+              //   let tempEvent = {
+              //     name: name,
+              //     // figure out how to do multiple week days
+              //     // find a function to get the next X weekday from a date.
+              //     // have a loop to iterate through the weekdays in sectionTime and make 
+              //     // and event for each one that is valid
+              //     start: isoDate + " " + sectionTime.startTime,
+              //     end: isoDate + " " + sectionTime.endTime
+              //   }
+              //   this.events.push(tempEvent);
+              // }
+
+              // if (sectionTime.tuesday == 1) {
+              //   let startWkDay = moment(sectionTime.startDate).weekday();
+                
+              //   if (startWkDay <= 3) { // 2 is the number for Monday (hopefully) 
+              //     // then just give me this week's instance of that day
+              //     isoDate = moment(sectionTime.startDate).isoWeekday(startWkDay).format(formatString);
+              //     console.log(isoDate);
+              //   } else {
+              //     // otherwise, give me *next week's* instance of that same day
+              //     isoDate = moment(sectionTime.startDate).add(1, 'weeks').isoWeekday(startWkDay).format(formatString);
+              //   }
+
+              //   // create the event object and add it to the list
+              //   let tempEvent = {
+              //     name: name,
+              //     // figure out how to do multiple week days
+              //     // find a function to get the next X weekday from a date.
+              //     // have a loop to iterate through the weekdays in sectionTime and make 
+              //     // and event for each one that is valid
+              //     start: isoDate + " " + sectionTime.startTime,
+              //     end: isoDate + " " + sectionTime.endTime
+              //   }
+              //   this.events.push(tempEvent);
+              // }
+
+              // // create the event object and add it to the list
+              // let tempEvent = {
+              //   name: name,
+              //   // figure out how to do multiple week days
+              //   // find a function to get the next X weekday from a date.
+              //   // have a loop to iterate through the weekdays in sectionTime and make 
+              //   // and event for each one that is valid
+              //   start: sectionTime.startDate + " " + sectionTime.startTime,
+              //   end: sectionTime.startDate + " " + sectionTime.endTime
+              // }
               // console.log(tempEvent);
-              this.events.push(tempEvent);
+              // this.events.push(tempEvent);
 
               // add a test to see if the section is in both first and second session
               // add another event if it is, but with the end date
               // if (sectionTime.)
-            }
-          });
+          }
+        });
           // for (let i = 0; i < this.sectionTimes.length; i++){
           //   if (section.id == this.sectionTimes[i].sectionId)
           //   {
@@ -208,8 +301,8 @@
     }
 </script>
 
-<style scoped>
-    .my-event {
+<!-- <style scoped>
+    /* .my-event {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -230,5 +323,5 @@
       position: absolute;
       right: 4px;
       margin-right: 0px;
-    }
-</style>
+    } */
+</style> -->
