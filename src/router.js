@@ -6,24 +6,29 @@ export default new Router({
   routes: [
     {
       path: "/",
-      alias: "/courses",
+      alias: "/login",
+      name: "login",
+      component: () => import("./components/LoginPage"),
+    },
+    {
+      path: "/courses",
       name: "courses",
-      component: () => import("./components/CourseList")
+      component: () => import("./components/CourseList"),
     },
     {
       path: "/courses/:id",
       name: "course-details",
-      component: () => import("./components/Course")
+      component: () => import("./components/Course"),
     },
     {
       path: "/add",
       name: "add",
-      component: () => import("./components/AddCourse.vue")
+      component: () => import("./components/AddCourse.vue"),
     },
     {
       path: "/calendar",
       name: "calendar",
-      component: () => import("./components/CalendarApp.vue")
-    }
-  ]
+      component: () => import("./components/CalendarApp.vue"),
+    },
+  ],
 });

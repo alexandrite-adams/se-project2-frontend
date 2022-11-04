@@ -1,4 +1,4 @@
-import http from "../http-common";
+import http from "./services.js";
 class SessionDataService {
   getAll() {
     return http.get("/schedule-t2/section");
