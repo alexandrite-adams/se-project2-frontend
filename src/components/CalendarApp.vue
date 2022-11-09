@@ -147,6 +147,7 @@
                     start: readableCurrentDay + " " + sectionTime.startTime,
                     end: readableCurrentDay + " " + sectionTime.endTime
                   }
+                  // temporary filtering
                   if (courseNumber.includes("CMSC"))
                     this.events.push(tempEvent);
                 }
