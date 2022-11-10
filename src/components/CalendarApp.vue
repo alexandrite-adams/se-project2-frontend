@@ -7,7 +7,8 @@
               <option selected value="First Session">First Session</option>
               <option value="Second Session">Second Session</option>
             </select>
-          </form>  
+          </form>
+          <p>{{today}}</p>  
         </div>
         <v-row>
         <v-col>
@@ -108,7 +109,8 @@
               let relevantCourse = this.courses.find( course => course.id == section.courseId);
               let name = relevantCourse.name;
 
-              let courseNumber = relevantCourse.number;
+              // used for temporary filtering
+              // let courseNumber = relevantCourse.number;
               
               let formatString = 'YYYY-MM-DD';
 
@@ -147,9 +149,10 @@
                     start: readableCurrentDay + " " + sectionTime.startTime,
                     end: readableCurrentDay + " " + sectionTime.endTime
                   }
+                  
                   // temporary filtering
-                  if (courseNumber.includes("CMSC"))
-                    this.events.push(tempEvent);
+                  // if (courseNumber.includes("NURS"))
+                  this.events.push(tempEvent);
                 }
                 currentDay.add(1, 'days');//.isoWeekday(i).format(formatString);
               }
