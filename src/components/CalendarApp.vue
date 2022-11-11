@@ -4,8 +4,8 @@
           <form>
             <label>Select Session: </label>
             <select @change="changeDisplayedSession">
-              <option selected value="First Session">First Session</option>
-              <option value="Second Session">Second Session</option>
+              <option selected value="Term One">Term One</option>
+              <option value="Term Two">Term Two</option>
             </select>
           </form>
           <p>{{today}}</p>  
@@ -38,11 +38,11 @@
     export default {
       data: () => ({
         // today: '2023-01-08', // placeholder same as first session
-        today: '2023-01-15',
+        today: '2023-01-06',
         calEnd: "2023-04-27", // ending date of the last session
-        sessionOne: '2023-01-08', // placeholder first session start
-        sessionTwo: '2023-03-06', // placeholder second session start
-        displayedSession: "First Session",
+        termOne: '2023-01-08', // placeholder first session start
+        termTwo: '2023-03-06', // placeholder second session start
+        displayedTerm: "Term One",
         sections: [],
         sectionTimes: [],
         courses: [],
@@ -132,13 +132,15 @@
                 activeWeekdays[6] = 1;
               
               // the date for the start of the week
-
-              // if their data hasn't passed, then include courses in both first and second term
               let currentDay = moment(sectionTime.startDate);
-              currentDay.add(1, 'weeks').isoWeekday(1);
+              console.log(currentDay.isoWeekday(1).format(formatString))
+              if (currentDay.format(formatString) < this.termOne)
+                currentDay.add(1, 'weeks').isoWeekday(1);
+              else
+                currentDay.isoWeekday(1);
+
               for (let i = 0; i < activeWeekdays.length; i++){
                 let readableCurrentDay = currentDay.isoWeekday(i).format(formatString);
-                console.log(readableCurrentDay);
                 if (activeWeekdays[i] == 1){
                   let tempEvent = {
                     name: name,
@@ -149,11 +151,23 @@
                     start: readableCurrentDay + " " + sectionTime.startTime,
                     end: readableCurrentDay + " " + sectionTime.endTime
                   }
-                  
+
                   // temporary filtering
                   // if (courseNumber.includes("NURS"))
                   this.events.push(tempEvent);
+
+                  // if their data hasn't passed, then include courses in both first and second term
+                  if (sectionTime.endTime > this.termTwo) {
+                    let tempEvent = {
+                      name: name,
+                      start: readableCurrentDay + " " + sectionTime.startTime,
+                      end: readableCurrentDay + " " + sectionTime.endTime
+                    }
+                    
+                    this.events.push(tempEvent);
+                  }
                 }
+
                 currentDay.add(1, 'days');//.isoWeekday(i).format(formatString);
               }
 
@@ -289,13 +303,15 @@
         //   });
         // },
         changeDisplayedSession() {
-          if (this.displayedSession == "First Session"){
-            this.today = this.sessionTwo;
-            this.displayedSession = "Second Session";
+          if (this.displayedTerm == "Term One"){
+            this.today = this.termTwo;
+            this.displayedTerm = "Term Two";
+            console.log("Term 2");
           }
           else{
-            this.today = this.sessionOne;
-            this.displayedSession = "First Session";
+            this.today = this.termOne;
+            this.displayedTerm = "Term One";
+            console.log("Term 1");
           }
         },
         showEvent (event) {
@@ -304,28 +320,3 @@
       }
     }
 </script>
-
-<!-- <style scoped>
-    /* .my-event {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      border-radius: 2px;
-      background-color: #1867c0;
-      color: #ffffff;
-      border: 1px solid #1867c0;
-      font-size: 12px;
-      padding: 3px;
-      cursor: pointer;
-      margin-bottom: 1px;
-      left: 4px;
-      margin-right: 8px;
-      position: relative;
-    }
-    
-    .my-event.with-time {
-      position: absolute;
-      right: 4px;
-      margin-right: 0px;
-    } */
-</style> -->
