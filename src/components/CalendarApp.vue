@@ -34,14 +34,12 @@
     import SectionDataService from "../services/SectionDataService";
     import SectionTimeDataService from "../services/SectionTimeDataService";
     import CourseDataService from "../services/CourseDataService";
-    import moment from 'moment';
     export default {
       data: () => ({
-        // today: '2023-01-08', // placeholder same as first session
-        today: '2023-01-06',
+        today: '2023-01-08',
         calEnd: "2023-04-27", // ending date of the last session
         termOne: '2023-01-08', // placeholder first session start
-        termTwo: '2023-03-06', // placeholder second session start
+        termTwo: '2023-03-05', // placeholder second session start
         displayedTerm: "Term One",
         sections: [],
         sectionTimes: [],
@@ -58,6 +56,11 @@
         // console.log(this.events)
       },
       methods: {
+        addDays(date, days) {
+          var result = new Date(date);
+          result.setDate(result.getDate() + days);
+          return result;
+        },
         async getSections() {
           await SectionDataService.getAll()
             .then(async response => {
@@ -111,8 +114,6 @@
 
               // used for temporary filtering
               // let courseNumber = relevantCourse.number;
-              
-              let formatString = 'YYYY-MM-DD';
 
               let activeWeekdays = [];
               // load up which weekdays have classes for this section
@@ -132,15 +133,20 @@
                 activeWeekdays[6] = 1;
               
               // the date for the start of the week
-              let currentDay = moment(sectionTime.startDate);
-              console.log(currentDay.isoWeekday(1).format(formatString))
-              if (currentDay.format(formatString) < this.termOne)
-                currentDay.add(1, 'weeks').isoWeekday(1);
+              let currentDay = new Date(sectionTime.startDate);
+              if (currentDay < new Date(this.termOne))
+                currentDay = this.addDays(currentDay, 7);
               else
-                currentDay.isoWeekday(1);
+                currentDay;
+              
+              let validBothTerms = false;
+              let termTwoCurrentDay = new Date(this.termTwo);
+              if (new Date(sectionTime.endDate) > new Date(this.termTwo)){
+                validBothTerms = true;
+              }
 
               for (let i = 0; i < activeWeekdays.length; i++){
-                let readableCurrentDay = currentDay.isoWeekday(i).format(formatString);
+                let readableCurrentDay = currentDay.toISOString().slice(0, 10);
                 if (activeWeekdays[i] == 1){
                   let tempEvent = {
                     name: name,
@@ -156,152 +162,26 @@
                   // if (courseNumber.includes("NURS"))
                   this.events.push(tempEvent);
 
+                  let termTworReadableCurrentDay = termTwoCurrentDay.toISOString().slice(0, 10)
                   // if their data hasn't passed, then include courses in both first and second term
-                  if (sectionTime.endTime > this.termTwo) {
+                  if (validBothTerms) {
                     let tempEvent = {
                       name: name,
-                      start: readableCurrentDay + " " + sectionTime.startTime,
-                      end: readableCurrentDay + " " + sectionTime.endTime
+                      start: termTworReadableCurrentDay + " " + sectionTime.startTime,
+                      end: termTworReadableCurrentDay + " " + sectionTime.endTime
                     }
                     
                     this.events.push(tempEvent);
                   }
                 }
-
-                currentDay.add(1, 'days');//.isoWeekday(i).format(formatString);
+                
+                currentDay = this.addDays(currentDay, 1);
+                termTwoCurrentDay = this.addDays(termTwoCurrentDay, 1);
               }
 
-
-
-              // let isoDate = '';
-              
-
-              // //create events for each specified week date
-              // if (sectionTime.sunday == 1) {
-              //   let startWkDay = moment(sectionTime.startDate).weekday();
-              //   if (startWkDay <= 1) { 
-              //     // then just give me this week's instance of that day
-              //     isoDate = moment(sectionTime.startDate).isoWeekday(startWkDay).format(formatString);
-              //   } else {
-              //     // otherwise, give me *next week's* instance of that same day
-              //     isoDate = moment(sectionTime.startDate).add(1, 'weeks').isoWeekday(startWkDay).format(formatString);
-              //   }
-
-              //   // create the event object and add it to the list
-              //   let tempEvent = {
-              //     name: name,
-              //     // figure out how to do multiple week days
-              //     // find a function to get the next X weekday from a date.
-              //     // have a loop to iterate through the weekdays in sectionTime and make 
-              //     // and event for each one that is valid
-              //     start: isoDate + " " + sectionTime.startTime,
-              //     end: isoDate + " " + sectionTime.endTime
-              //   }
-              //   this.events.push(tempEvent);
-              // }
-
-              // if (sectionTime.monday == 1) {
-              //   let startWkDay = moment(sectionTime.startDate).weekday();
-
-              //   if (startWkDay <= 1) { // 2 is the number for Monday (hopefully) 
-              //     // then just give me this week's instance of that day
-              //     isoDate = moment(sectionTime.startDate).isoWeekday(startWkDay).format(formatString);
-              //   } else {
-              //     // otherwise, give me *next week's* instance of that same day
-              //     isoDate = moment(sectionTime.startDate).add(1, 'weeks').isoWeekday(startWkDay).format(formatString);
-              //   }
-
-              //   // create the event object and add it to the list
-              //   let tempEvent = {
-              //     name: name,
-              //     // figure out how to do multiple week days
-              //     // find a function to get the next X weekday from a date.
-              //     // have a loop to iterate through the weekdays in sectionTime and make 
-              //     // and event for each one that is valid
-              //     start: isoDate + " " + sectionTime.startTime,
-              //     end: isoDate + " " + sectionTime.endTime
-              //   }
-              //   this.events.push(tempEvent);
-              // }
-
-              // if (sectionTime.tuesday == 1) {
-              //   let startWkDay = moment(sectionTime.startDate).weekday();
-                
-              //   if (startWkDay <= 3) { // 2 is the number for Monday (hopefully) 
-              //     // then just give me this week's instance of that day
-              //     isoDate = moment(sectionTime.startDate).isoWeekday(startWkDay).format(formatString);
-              //     console.log(isoDate);
-              //   } else {
-              //     // otherwise, give me *next week's* instance of that same day
-              //     isoDate = moment(sectionTime.startDate).add(1, 'weeks').isoWeekday(startWkDay).format(formatString);
-              //   }
-
-              //   // create the event object and add it to the list
-              //   let tempEvent = {
-              //     name: name,
-              //     // figure out how to do multiple week days
-              //     // find a function to get the next X weekday from a date.
-              //     // have a loop to iterate through the weekdays in sectionTime and make 
-              //     // and event for each one that is valid
-              //     start: isoDate + " " + sectionTime.startTime,
-              //     end: isoDate + " " + sectionTime.endTime
-              //   }
-              //   this.events.push(tempEvent);
-              // }
-
-              // // create the event object and add it to the list
-              // let tempEvent = {
-              //   name: name,
-              //   // figure out how to do multiple week days
-              //   // find a function to get the next X weekday from a date.
-              //   // have a loop to iterate through the weekdays in sectionTime and make 
-              //   // and event for each one that is valid
-              //   start: sectionTime.startDate + " " + sectionTime.startTime,
-              //   end: sectionTime.startDate + " " + sectionTime.endTime
-              // }
-              // console.log(tempEvent);
-              // this.events.push(tempEvent);
-
-              // add a test to see if the section is in both first and second session
-              // add another event if it is, but with the end date
-              // if (sectionTime.)
           }
         });
-          // for (let i = 0; i < this.sectionTimes.length; i++){
-          //   if (section.id == this.sectionTimes[i].sectionId)
-          //   {
-          //     // find the course name
-
-          //     // suggest that the sections controller has a function to grab sections, include their courses and include their sectionTimes
-          //     let relevantCourse = this.courses.find( course => course.id == section.courseId);
-          //     let name = relevantCourse.name;
-          //     // console.log(name)
-
-          //     // create the event object and add it to the list
-          //     let sectionTime = this.sectionTimes[i];
-          //     let tempEvent = {
-          //       name: name,
-          //       // figure out how to do multiple week days
-          //       start: sectionTime.startDate + " " + sectionTime.startTime,
-          //       end: sectionTime.startDate + " " + sectionTime.endTime
-          //     }
-          //     // console.log(tempEvent);
-          //     this.events.push(tempEvent);
-
-          //     // add a test to see if the section is in both first and second session
-          //     // add another event if it is, but with the end date
-          //     // if (sectionTime.)
-          //   }  
-          // }
         },
-        // createCalEvents() {
-        //   this.sections.forEach(this.createCalEvent);
-        // },
-        // createCalEvent(event) {
-        //   this.events.push({
-        //     name: event.name
-        //   });
-        // },
         changeDisplayedSession() {
           if (this.displayedTerm == "Term One"){
             this.today = this.termTwo;
