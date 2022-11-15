@@ -34,10 +34,8 @@
         <v-card>
           <v-list-item-content class="justify-center">
             <div class="mx-auto text-center">
-              <v-avatar color="secondary" class="mt-2 mb-2">
-                <span class="accent--text font-weight-bold">{{
-                  initials
-                }}</span>
+              <v-avatar color="indigo darken-2" class="mt-2 mb-2">
+                <span class="white--text font-weight-bold">{{ initials }}</span>
               </v-avatar>
               <h3>{{ name }}</h3>
               <p class="text-caption mt-1">
@@ -102,6 +100,10 @@ export default {
       if (this.user != null) {
         this.initials = this.user.fName[0] + this.user.lName[0];
         this.name = this.user.fName + " " + this.user.lName;
+        if (this.user.role == "faculty") {
+          //this.$router.go();
+          this.$router.push({ name: "calendar" });
+        }
       }
     },
     logout() {
@@ -109,6 +111,7 @@ export default {
         .then((response) => {
           console.log(response);
           Utils.removeItem("user");
+          this.$router.go();
           this.$router.push({ name: "login" });
         })
         .catch((error) => {
