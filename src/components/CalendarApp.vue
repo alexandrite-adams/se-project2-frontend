@@ -40,7 +40,7 @@
                     :color="selectedEvent.color"
                     dark
                   >
-                    <v-btn icon>
+                    <v-btn icon :href="'/courses/' + selectedEvent.courseId">
                       <v-icon>mdi-pencil</v-icon>
                     </v-btn>
                     <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
@@ -207,6 +207,7 @@
               // suggest that the sections controller has a function to grab sections, include their courses and include their sectionTimes
               let relevantCourse = this.courses.find( course => course.id == section.courseId);
               let name = relevantCourse.name;
+              let courseId = relevantCourse.id;
 
               // find the faculty in charge of the  
               // grab facultySections, find facultySection with sectionId, find relevant faculty
@@ -262,6 +263,7 @@
                     number: relevantCourse.number,
                     faculty: "Faculty: " + faculty,
                     room: "Room: " + room,
+                    courseId: courseId,
                   }
 
                   // temporary filtering
@@ -278,6 +280,7 @@
                       number: relevantCourse.number,
                       faculty: "Faculty: " + faculty,
                       room: "Room: " + room,
+                      courseId: courseId,
                     }
                     
                     this.events.push(tempEvent);
