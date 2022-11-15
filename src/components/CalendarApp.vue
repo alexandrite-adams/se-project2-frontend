@@ -215,8 +215,12 @@
               // find the faculty in charge of the  
               // grab facultySections, find facultySection with sectionId, find relevant faculty
               let relevantFacultySection = this.facultySection.find( facultySection => facultySection.sectionId == section.id);
-              let relevantFaculty = this.faculty.find( faculty => faculty.id == relevantFacultySection.facultyId);
-              let faculty = relevantFaculty.fName + " " + relevantFaculty.lName;
+              let faculty = "Not found";
+              if (relevantFacultySection != undefined && relevantFacultySection.facultyId != undefined && relevantFacultySection.facultyId != null){
+                let relevantFaculty = this.faculty.find( faculty => faculty.id == relevantFacultySection.facultyId);
+                faculty = relevantFaculty.fName + " " + relevantFaculty.lName;
+              } 
+              
 
               // find the room number
               let relevantRoom = this.rooms.find(room => room.id == sectionTime.roomId);
