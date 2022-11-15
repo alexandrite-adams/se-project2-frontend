@@ -137,7 +137,9 @@
               await this.getFactultySection();
               await this.getRooms();
               // map sectionTimes to sections
-              this.sections.forEach(this.createEvent)
+              for (let i = 0; i < this.sections.length; i++){
+                this.createEvent(this.sections[i]);
+              }
               
 
               // Change this for the filter
@@ -199,8 +201,9 @@
         // If the section is a full semester, 2 events will
         // be created, one for each section time.
         createEvent(section) {
-          
-          this.sectionTimes.forEach( sectionTime => {
+          for (let i = 0; i < this.sectionTimes.length; i++){
+            let sectionTime = this.sectionTimes[i];
+
             if (section.id == sectionTime.sectionId) 
             {
               // find the course name
@@ -213,7 +216,6 @@
               // grab facultySections, find facultySection with sectionId, find relevant faculty
               let relevantFacultySection = this.facultySection.find( facultySection => facultySection.sectionId == section.id);
               let relevantFaculty = this.faculty.find( faculty => faculty.id == relevantFacultySection.facultyId);
-              console.log(relevantFaculty);
               let faculty = relevantFaculty.fName + " " + relevantFaculty.lName;
 
               // find the room number
@@ -290,9 +292,8 @@
                 currentDay = this.addDays(currentDay, 1);
                 termTwoCurrentDay = this.addDays(termTwoCurrentDay, 1);
               }
-
+            }
           }
-        });
         },
         changeDisplayedSession() {
           if (this.displayedTerm == "Term One"){
