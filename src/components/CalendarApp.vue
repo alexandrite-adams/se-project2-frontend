@@ -299,12 +299,10 @@
           if (this.displayedTerm == "Term One"){
             this.today = this.termTwo;
             this.displayedTerm = "Term Two";
-            console.log("Term 2");
           }
           else{
             this.today = this.termOne;
             this.displayedTerm = "Term One";
-            console.log("Term 1");
           }
         },
       }
