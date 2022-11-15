@@ -80,6 +80,7 @@ export default {
     },
     updatePublished(status) {
       var data = {
+        id: this.currentSection.id,
         number: this.number,
         courseId: this.courseId,
         semesterId: this.semesterId,

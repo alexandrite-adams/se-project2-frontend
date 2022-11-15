@@ -6,23 +6,28 @@
                 <div>{{ this.title }}</div>    
             </v-toolbar-title> -->
       <v-spacer></v-spacer>
-      <v-toolbar-items>
-        <!-- v-if="user != null"> -->
+      <v-toolbar-items v-if="user != null">
         <v-btn class="white--text" exact :to="{ name: 'calendar' }" text>
           Calendar
         </v-btn>
         <v-btn class="white--text" exact :to="{ name: 'courses' }" text>
           Courses
         </v-btn>
-        <v-btn class="white--text" exact :to="{ name: 'add' }" text>
+        <v-btn
+          v-if="user.admin == 'admin'"
+          class="white--text"
+          exact
+          :to="{ name: 'add' }"
+          text
+        >
           Add Course
         </v-btn>
       </v-toolbar-items>
       <v-menu bottom min-width="200px" rounded offset-y v-if="user != null">
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon x-large v-on="on" v-bind="attrs">
-            <v-avatar v-if="user != null" color="secondary">
-              <span class="accent--text font-weight-bold">{{ initials }}</span>
+            <v-avatar v-if="user != null" color="indigo darken-2">
+              <span class="white--text font-weight-bold">{{ initials }}</span>
             </v-avatar>
           </v-btn>
         </template>
@@ -105,7 +110,6 @@ export default {
           console.log(response);
           Utils.removeItem("user");
           this.$router.push({ name: "login" });
-          this.$router.go();
         })
         .catch((error) => {
           console.log("error", error);
