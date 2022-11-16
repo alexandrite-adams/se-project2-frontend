@@ -1,4 +1,4 @@
-import http from "../http-common";
+import http from "./services.js";
 class SessionDataService {
   getAll() {
     return http.get("/schedule-t2/section");
@@ -14,9 +14,6 @@ class SessionDataService {
   }
   delete(id) {
     return http.delete(`/schedule-t2/section/${id}`);
-  }
-  deleteAll() {
-    return http.delete(`/schedule-t2/section/`);
   }
 }
 export default new SessionDataService();
