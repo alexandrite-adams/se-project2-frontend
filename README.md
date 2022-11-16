@@ -1,4 +1,4 @@
-# se-project3-frontend
+# se-project2-frontend
 
 ## Project setup
 ```
